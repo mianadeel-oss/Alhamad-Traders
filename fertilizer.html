@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fertilizers & Nutrients — Alhamad Trader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/output.css">
+</head>
+
+<body class="flex flex-col min-h-screen">
+    <div id="navbar-mount"></div>
+
+    <div class="bg-emerald-900 text-white py-10 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-3xl font-extrabold tracking-tight">Fertilizers & Soil Nutrition</h1>
+            <p class="text-emerald-200 text-xs mt-1">Urea, DAP, NPK formulas, and micro-nutrients for high crop yield.
+            </p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-1">
+        <div id="fertGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    </div>
+
+    <div id="footer-mount"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const list = DataManager.getProducts().filter(p => p.category === 'Fertilizers');
+            const grid = document.getElementById('fertGrid');
+
+            grid.innerHTML = list.map(item => `
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm card-hover flex flex-col justify-between">
+          <div>
+            <a href="product.html?id=${item.id}" class="block relative h-48 bg-slate-100 overflow-hidden">
+              <img src="${item.image}" class="w-full h-full object-cover" />
+              <span class="absolute top-2 left-2 bg-emerald-800 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">${item.subcategory}</span>
+            </a>
+            <div class="p-4">
+              <span class="text-[10px] font-semibold text-slate-400 uppercase">${item.brand}</span>
+              <a href="product.html?id=${item.id}" class="block font-bold text-slate-900 text-sm hover:text-emerald-700 mt-1 line-clamp-2">${item.name}</a>
+              <div class="text-xs text-slate-500 mt-1">Package: <strong>${item.packageSize}</strong></div>
+            </div>
+          </div>
+          <div class="p-4 pt-0">
+            <div class="text-lg font-black text-emerald-900 mb-3">${formatPrice(item.discountPrice || item.price)}</div>
+            <button onclick='Cart.addItem(DataManager.getProductById("${item.id}"))' class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl text-xs transition">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      `).join('');
+        });
+    </script>
+    <script src="data.js"></script>
+    <script src="cart.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact & Shop Location — Alamad Trader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/output.css">
+</head>
+
+<body class="flex flex-col min-h-screen">
+    <div id="navbar-mount"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1 w-full">
+        <div class="text-center max-w-xl mx-auto mb-10">
+            <h1 class="text-3xl font-extrabold text-slate-900">Contact Alhamad Trader</h1>
+            <p class="text-xs text-slate-500 mt-2">Visit our shop in Dunya Pur or send a direct inquiry.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 text-xs">
+                <div>
+                    <strong class="block text-slate-900">📍 Shop Address</strong>
+                    <span class="text-slate-600"> Dokata Road, Near Meezan Bank, Dunya Pur, Punjab</span>
+                </div>
+                <div>
+                    <strong class="block text-slate-900">📞 Phone & Hotline</strong>
+                    <span class="text-slate-600">+92 300 0695475</span>
+                </div>
+                <div>
+                    <strong class="block text-slate-900">💬 WhatsApp Support</strong>
+                    <a href="https://wa.me/923000695475" target="_blank"
+                        class="text-emerald-700 font-bold hover:underline">Click to chat on WhatsApp</a>
+                </div>
+                <div>
+                    <strong class="block text-slate-900">⏰ Working Hours</strong>
+                    <span class="text-slate-600">Monday - Saturday: 8:00 AM - 8:30 PM</span>
+                </div>
+
+                <!-- Map Placeholder -->
+                <div class="rounded-xl overflow-hidden h-48 border mt-4">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3462.1344495498547!2d71.74086397467134!3d29.802659875046203!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x393b6fe972a1aa3f%3A0x639bc732e768383e!2sMeezan%20Bank%20-%20Dunyapur%20Branch!5e0!3m2!1sen!2s!4v1792620300018!5m2!1sen!2s"
+                        class="h-full w-full" style="  border:0; " allowfullscreen="" loading="lazy"
+                        referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="font-bold text-sm mb-4">Send Message</h3>
+                <form onsubmit="handleContact(event)" class="space-y-4 text-xs">
+                    <div>
+                        <label class="block font-bold mb-1">Your Name</label>
+                        <input type="text" required placeholder="Farmer name"
+                            class="w-full bg-slate-50 border rounded-xl p-3" />
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">Mobile / WhatsApp Number</label>
+                        <input type="tel" required placeholder="03000695475"
+                            class="w-full bg-slate-50 border rounded-xl p-3" />
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">Your Message</label>
+                        <textarea rows="4" required placeholder="Inquiry about seeds, fertilizers or pesticides..."
+                            class="w-full bg-slate-50 border rounded-xl p-3"></textarea>
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition">
+                        Send Inquiry
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-mount"></div>
+
+    <script>
+        function handleContact(e) {
+            e.preventDefault();
+            showToast('Thank you! Your message has been sent to our shop.');
+            e.target.reset();
+        }
+    </script>
+    <script src="data.js"></script>
+    <script src="cart.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout & Dispatch — Alhamad Trader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/output.css">
+</head>
+
+<body class="flex flex-col min-h-screen">
+    <div id="navbar-mount"></div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
+        <h1 class="text-3xl font-extrabold text-slate-900 mb-8">Delivery & Checkout</h1>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="font-bold text-slate-900 text-base mb-4">Farmer Information</h3>
+                <form onsubmit="placeOrder(event)" class="space-y-4 text-xs">
+                    <div>
+                        <label class="block font-bold mb-1">Full Name *</label>
+                        <input id="cName" type="text" required placeholder="e.g. Muhammad Aslam"
+                            class="w-full bg-slate-50 border rounded-xl p-3" />
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-bold mb-1">Phone / WhatsApp *</label>
+                            <input id="cPhone" type="tel" required placeholder="03001234567"
+                                class="w-full bg-slate-50 border rounded-xl p-3" />
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">City / Tehsil</label>
+                            <input id="cCity" type="text" placeholder="e.g. Okara / Depalpur"
+                                class="w-full bg-slate-50 border rounded-xl p-3" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">Farm / Delivery Address *</label>
+                        <textarea id="cAddress" required rows="3" placeholder="Village / Chak / Landmark"
+                            class="w-full bg-slate-50 border rounded-xl p-3"></textarea>
+                    </div>
+                    <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
+                        <strong>Payment Method:</strong> Cash on Delivery (COD) / Pay at Shop
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <button type="submit"
+                            class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl text-xs transition">
+                            Confirm & Save Order
+                        </button>
+                        <button type="button" onclick="sendWhatsAppOrder()"
+                            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl text-xs transition">
+                            Order via WhatsApp
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit space-y-3">
+                <h3 class="font-bold text-xs uppercase border-b pb-2">Order Items</h3>
+                <div id="coList" class="space-y-2 text-xs"></div>
+                <div class="border-t pt-2 flex justify-between font-black text-sm">
+                    <span>Total:</span>
+                    <span id="coTotal" class="text-emerald-900 font-black">Rs. 0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-mount"></div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cart = Cart.getCart();
+            if (cart.length === 0) {
+                window.location.href = 'cart.html';
+                return;
+            }
+            document.getElementById('coList').innerHTML = cart.map(i => `
+        <div class="flex justify-between">
+          <span>${i.name} (x${i.quantity})</span>
+          <strong>${formatPrice(i.price * i.quantity)}</strong>
+        </div>
+      `).join('');
+            document.getElementById('coTotal').textContent = formatPrice(Cart.getSubtotal());
+        });
+
+        function placeOrder(e) {
+            e.preventDefault();
+            const cart = Cart.getCart();
+            const order = {
+                orderNumber: `AT-${Math.floor(100000 + Math.random() * 900000)}`,
+                createdAt: new Date().toISOString(),
+                customer: {
+                    name: document.getElementById('cName').value.trim(),
+                    phone: document.getElementById('cPhone').value.trim(),
+                    address: document.getElementById('cAddress').value.trim(),
+                    city: document.getElementById('cCity').value.trim()
+                },
+                items: cart,
+                total: Cart.getSubtotal(),
+                status: "Pending"
+            };
+
+            DataManager.saveOrder(order);
+            Cart.clear();
+            alert(`Order confirmed! Your Order # is ${order.orderNumber}. We will call you for delivery.`);
+            window.location.href = 'index.html';
+        }
+
+        function sendWhatsAppOrder() {
+            const cart = Cart.getCart();
+            const customer = {
+                name: document.getElementById('cName').value.trim() || "Farmer",
+                phone: document.getElementById('cPhone').value.trim() || "N/A",
+                address: document.getElementById('cAddress').value.trim() || "Address on WhatsApp",
+                city: document.getElementById('cCity').value.trim()
+            };
+            const waUrl = Cart.generateWhatsAppUrl('923001234567', customer, cart, Cart.getSubtotal());
+            window.open(waUrl, '_blank');
+        }
+    </script>
+    <script src="data.js"></script>
+    <script src="cart.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>

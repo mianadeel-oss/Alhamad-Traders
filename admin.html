@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard — Alhamad Trader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/output.css">
+</head>
+
+<body class="bg-slate-100 min-h-screen text-slate-800">
+
+    <!-- Login Screen -->
+    <div id="adminLogin"
+        class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-8 shadow-2xl">
+            <div class="text-center mb-6">
+                <span class="text-3xl">🌾</span>
+                <h2 class="text-xl font-bold mt-2">Alhamad Admin</h2>
+                <p class="text-[11px] text-slate-400">Default: admin@alhamad.com / admin123</p>
+            </div>
+            <form onsubmit="handleLogin(event)" class="space-y-4 text-xs">
+                <input id="lEmail" type="email" value="admin@alhamad.com" class="w-full border rounded-xl p-3"
+                    required />
+                <input id="lPass" type="password" value="admin123" class="w-full border rounded-xl p-3" required />
+                <button type="submit" class="w-full bg-emerald-800 text-white font-bold py-3 rounded-xl">Sign
+                    In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Admin Interface -->
+    <div id="adminPanel" class="hidden flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-60 bg-slate-900 text-slate-300 p-5 flex flex-col justify-between">
+            <div class="space-y-6">
+                <div class="font-black text-white text-base">🌾 Alhamad Trader</div>
+                <nav class="space-y-2 text-xs font-semibold">
+                    <button onclick="tab('stats')" class="block w-full text-left p-2 rounded hover:bg-slate-800">📊
+                        Stats</button>
+                    <button onclick="tab('prods')" class="block w-full text-left p-2 rounded hover:bg-slate-800">📦
+                        Products</button>
+                    <button onclick="tab('orders')" class="block w-full text-left p-2 rounded hover:bg-slate-800">📑
+                        Orders</button>
+                </nav>
+            </div>
+            <a href="index.html" class="text-xs text-emerald-400 hover:underline">← Back to Store</a>
+        </aside>
+
+        <!-- Main Views -->
+        <main class="flex-1 p-8 overflow-y-auto">
+            <h1 class="text-2xl font-black mb-6">Store Management Dashboard</h1>
+
+            <!-- Stats Tab -->
+            <div id="tab-stats" class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="bg-white p-5 rounded-2xl border shadow-sm">
+                    <span class="text-xs text-slate-400 uppercase font-bold">Total Products</span>
+                    <div id="statPCount" class="text-2xl font-black text-emerald-900 mt-1">0</div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border shadow-sm">
+                    <span class="text-xs text-slate-400 uppercase font-bold">Saved Orders</span>
+                    <div id="statOCount" class="text-2xl font-black text-slate-900 mt-1">0</div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border shadow-sm">
+                    <span class="text-xs text-slate-400 uppercase font-bold">Total Order Value</span>
+                    <div id="statRev" class="text-2xl font-black text-emerald-900 mt-1">Rs. 0</div>
+                </div>
+            </div>
+
+            <!-- Products Tab -->
+            <div id="tab-prods" class="hidden space-y-6">
+                <div class="bg-white p-5 rounded-2xl border shadow-sm">
+                    <h3 class="font-bold text-xs uppercase mb-4">Add New Agricultural Product</h3>
+                    <form onsubmit="addProduct(event)" class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                        <input id="npName" placeholder="Name" required class="border p-2 rounded" />
+                        <select id="npCat" class="border p-2 rounded">
+                            <option value="Seeds">Seeds</option>
+                            <option value="Pesticides">Pesticides</option>
+                            <option value="Fertilizers">Fertilizers</option>
+                        </select>
+                        <input id="npSubcat" placeholder="Subcat (e.g. Maize Seeds)" required
+                            class="border p-2 rounded" />
+                        <input id="npBrand" placeholder="Brand" required class="border p-2 rounded" />
+                        <input id="npPack" placeholder="Package Size" required class="border p-2 rounded" />
+                        <input id="npPrice" type="number" placeholder="Price" required class="border p-2 rounded" />
+                        <input id="npStock" type="number" placeholder="Stock" required class="border p-2 rounded" />
+                        <button type="submit" class="bg-emerald-800 text-white font-bold rounded p-2">Add
+                            Product</button>
+                    </form>
+                </div>
+
+                <div class="bg-white rounded-2xl border overflow-hidden">
+                    <table class="w-full text-xs text-left">
+                        <thead class="bg-slate-50 uppercase text-slate-400 border-b">
+                            <tr>
+                                <th class="p-3">Name</th>
+                                <th class="p-3">Category</th>
+                                <th class="p-3">Price</th>
+                                <th class="p-3">Stock</th>
+                                <th class="p-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pTableBody" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="tab-orders" class="hidden bg-white rounded-2xl border overflow-hidden">
+                <table class="w-full text-xs text-left">
+                    <thead class="bg-slate-50 uppercase text-slate-400 border-b">
+                        <tr>
+                            <th class="p-3">Order #</th>
+                            <th class="p-3">Customer</th>
+                            <th class="p-3">Phone</th>
+                            <th class="p-3">Total</th>
+                            <th class="p-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="oTableBody" class="divide-y"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+
+    <script>
+        function handleLogin(e) {
+            e.preventDefault();
+            const em = document.getElementById('lEmail').value;
+            const pw = document.getElementById('lPass').value;
+            if (em === 'admin@alhamad.com' && pw === 'admin123') {
+                document.getElementById('adminLogin').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loadAdminData();
+            } else {
+                alert('Invalid email or password');
+            }
+        }
+
+        function tab(name) {
+            ['stats', 'prods', 'orders'].forEach(t => document.getElementById(`tab-${t}`).classList.add('hidden'));
+            document.getElementById(`tab-${name}`).classList.remove('hidden');
+        }
+
+        function loadAdminData() {
+            const prods = DataManager.getProducts();
+            const orders = DataManager.getOrders();
+
+            document.getElementById('statPCount').textContent = prods.length;
+            document.getElementById('statOCount').textContent = orders.length;
+            const rev = orders.reduce((s, o) => s + (o.total || 0), 0);
+            document.getElementById('statRev').textContent = formatPrice(rev);
+
+            // Render Products
+            document.getElementById('pTableBody').innerHTML = prods.map(p => `
+        <tr>
+          <td class="p-3 font-bold">${p.name}</td>
+          <td class="p-3">${p.category} (${p.subcategory})</td>
+          <td class="p-3">${formatPrice(p.price)}</td>
+          <td class="p-3">${p.stock}</td>
+          <td class="p-3"><button onclick="delProd('${p.id}')" class="text-red-600 font-bold">Delete</button></td>
+        </tr>
+      `).join('');
+
+            // Render Orders
+            document.getElementById('oTableBody').innerHTML = orders.map(o => `
+        <tr>
+          <td class="p-3 font-bold">${o.orderNumber}</td>
+          <td class="p-3">${o.customer.name}</td>
+          <td class="p-3">${o.customer.phone}</td>
+          <td class="p-3 font-bold text-emerald-800">${formatPrice(o.total)}</td>
+          <td class="p-3">
+            <select onchange="DataManager.updateOrderStatus('${o.orderNumber}', this.value)" class="border rounded p-1 text-xs">
+              ${['Pending', 'Confirmed', 'Processing', 'Delivered', 'Cancelled'].map(st => `
+                <option value="${st}" ${o.status === st ? 'selected' : ''}>${st}</option>
+              `).join('')}
+            </select>
+          </td>
+        </tr>
+      `).join('');
+        }
+
+        function addProduct(e) {
+            e.preventDefault();
+            const list = DataManager.getProducts();
+            list.push({
+                id: `custom-${Date.now()}`,
+                name: document.getElementById('npName').value,
+                category: document.getElementById('npCat').value,
+                subcategory: document.getElementById('npSubcat').value,
+                brand: document.getElementById('npBrand').value,
+                packageSize: document.getElementById('npPack').value,
+                price: Number(document.getElementById('npPrice').value),
+                stock: Number(document.getElementById('npStock').value),
+                description: "Standard agricultural grade product.",
+                safetyInstructions: "Follow standard agricultural safety guidelines.",
+                image: "https://images.unsplash.com/photo-1592417817098-8f3d6910985b?auto=format&fit=crop&w=600&q=80"
+            });
+            DataManager.saveProducts(list);
+            showToast('Product added successfully!');
+            e.target.reset();
+            loadAdminData();
+        }
+
+        function delProd(id) {
+            if (!confirm('Delete this product?')) return;
+            const list = DataManager.getProducts().filter(p => p.id !== id);
+            DataManager.saveProducts(list);
+            loadAdminData();
+        }
+    </script>
+    <script src="data.js"></script>
+    <script src="cart.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
